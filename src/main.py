@@ -45,7 +45,7 @@ def get_songs_list():
   #              song += '    ' * (len(songs_column[-1]) - len(song))
         page_length += len(songs_column[-1])
         
-        if page_length > 30:
+        if page_length + len(page_list) * 8 > 90:
             page_lists.append(page_list)
             page_list = [songs_column]
             page_length = len(songs_column[-1])

@@ -35,8 +35,8 @@ songs=list(set(songs))
 current = random.sample(songs, 20)  
 tot = ''
 for c in current:
-    if len(c) < 20:
-        sp = int((20 - len(c)) / 2)
+    if len(c) < 14:
+        sp = 14 - len(c)
         c = ' ' * sp + c + ' ' * sp
     tot += c + '\n'
     
@@ -53,8 +53,8 @@ def update_list():
     current2 = random.sample(songs, 20)  
     tot2 = ''
     for c in current2:
-        if len(c) < 20:
-            sp = int((20 - len(c)) / 2)
+        if len(c) < 14:
+            sp = 14 - len(c)
             c = ' ' * sp + c + ' ' * sp
         tot2 += c + '\n'
 
