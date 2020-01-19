@@ -1,20 +1,20 @@
-# -*- coding:utf-8 -*-  
- 
-import tkinter as tk   
-import tkinter.font as tf    # 导入Tkinter模块  
-from PIL import Image, ImageTk  
+# -*- coding:utf-8 -*-
+
+import tkinter as tk
+import tkinter.font as tf    # 导入Tkinter模块
+from PIL import Image, ImageTk
 from collections import Counter
 
-root = tk.Tk()  
-canvas = tk.Canvas(root,  
-    width = 1000,      # 指定Canvas组件的宽度  
-    height = 600,      # 指定Canvas组件的高度  
-    bg = 'white')      # 指定Canvas组件的背景色  
-#im = Tkinter.PhotoImage(file='img.gif')     # 使用PhotoImage打开图片  
-image = Image.open("a.jpg")  
+root = tk.Tk()
+canvas = tk.Canvas(root,
+    width = 1000,      # 指定Canvas组件的宽度
+    height = 600,      # 指定Canvas组件的高度
+    bg = 'white')      # 指定Canvas组件的背景色
+#im = Tkinter.PhotoImage(file='img.gif')     # 使用PhotoImage打开图片
+image = Image.open("a.jpg")
 image = image.resize((1000, 600), 2)
-im = ImageTk.PhotoImage(image)  
-canvas.create_image(500,300,image = im)      # 使用create_image将图片添加到Canvas组件中  
+im = ImageTk.PhotoImage(image)
+canvas.create_image(500,300,image = im)      # 使用create_image将图片添加到Canvas组件中
 
 page_lists = []
 page_strs = []
@@ -28,15 +28,15 @@ def get_songs_list():
     songs=[]
     for k in l:
         k = k.strip('\n')  #去掉读取中的换行字符
-        songs.append(k.replace(' ', ''))   
+        songs.append(k.replace(' ', ''))
     while '' in songs:
-        songs.remove('') 
+        songs.remove('')
     songs=list(set(songs))
-    songs.sort(key = lambda i:len(i),reverse=False) 
-    
+    songs.sort(key = lambda i:len(i),reverse=False)
+
     # split to columns
     songs_columns = [songs[i:i+row_count] for i in range(0,len(songs),row_count)]
-    
+
     page_length = 0
     page_list = []
     for songs_column in songs_columns:
@@ -44,7 +44,7 @@ def get_songs_list():
   #          if len(song) < len(songs_column[-1]):
   #              song += '    ' * (len(songs_column[-1]) - len(song))
         page_length += len(songs_column[-1])
-        
+
         if page_length + len(page_list) * 8 > 90:
             page_lists.append(page_list)
             page_list = [songs_column]
@@ -52,10 +52,7 @@ def get_songs_list():
         else:
             page_list.append(songs_column)
     page_lists.append(page_list)
-    
-    
-    
-    
+
     for page in page_lists:
         page_str = ''
         page_row_count = len(page[0])
@@ -72,36 +69,40 @@ def get_songs_list():
                 page_str += n + m + '    '
             page_str += '\n'
         page_strs.append(page_str)
-            
-    
-    
-    
-        
+
 get_songs_list()
 
-    
 ft = tf.Font(family='手书体', size=15)
-t = canvas.create_text(500,300,  
-   text = page_strs[0],  
+t = canvas.create_text(500,300,
+   text = page_strs[0],
    font=ft,
-   fill = '#0000CD')  
-canvas.pack()         # 将Canvas添加到主窗口  
+   fill = '#0000CD')
+canvas.pack()         # 将Canvas添加到主窗口
 txtlist = []
 txtlist.append(t)
-def de(event):
+
+def change_page():
     canvas.delete(txtlist[-1])
     q = len(txtlist) % len(page_lists)
-    e = canvas.create_text(500,300,  
-    text = page_strs[q],  
+    e = canvas.create_text(500,300,
+    text = page_strs[q],
     font=ft,
     fill = '#0000CD')
     txtlist.append(e)
-    
-page_image = Image.open("p.jpg") 
+
+def de(event):
+    change_page()
+
+def update_list():
+    change_page()
+    canvas.after(30000, update_list)
+
+page_image = Image.open("p.jpg")
 page_image = page_image.resize((100, 36), 2)
-im2 = ImageTk.PhotoImage(page_image)  
+im2 = ImageTk.PhotoImage(page_image)
 bb = canvas.create_image(500,576,image = im2)
 
-canvas.tag_bind(bb, '<ButtonPress-1>', de)    
+canvas.tag_bind(bb, '<ButtonPress-1>', de)
 
-root.mainloop()  
+update_list()
+root.mainloop()
