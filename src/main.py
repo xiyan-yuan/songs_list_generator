@@ -17,6 +17,7 @@ im = ImageTk.PhotoImage(image)
 canvas.create_image(500,300,image = im)      # 使用create_image将图片添加到Canvas组件中
 
 page_lists = []
+page_numbers = [0]
 page_strs = []
 
 def get_songs_list():
@@ -39,28 +40,34 @@ def get_songs_list():
 
     page_length = 0
     page_list = []
+    page_number = 0
     for songs_column in songs_columns:
   #      for song in songs_column:
   #          if len(song) < len(songs_column[-1]):
   #              song += '    ' * (len(songs_column[-1]) - len(song))
         page_length += len(songs_column[-1])
 
-        if page_length + len(page_list) * 8 > 88:
+        if page_length + len(page_list) * 12 > 90:
             page_lists.append(page_list)
             page_list = [songs_column]
+            page_numbers.append(page_number)
+            page_number += len(songs_column)
             page_length = len(songs_column[-1])
         else:
             page_list.append(songs_column)
+            page_number += len(songs_column)
     page_lists.append(page_list)
 
-    for page in page_lists:
+    for t in range(len(page_lists)):
+        page = page_lists[t]
+        number = page_numbers[t]
         page_str = ''
         page_row_count = len(page[0])
         for i in range(page_row_count):
             for j in range(len(page)):
                 if len(page[j]) <= i:
                     continue
-                n = str(page_row_count * j + i) + '.'
+                n = str(number + page_row_count * j + i) + '.'
                 c = len(page[j][-1]) - len(page[j][i])
                 m = page[j][i] + '    ' * c
                 if len(n) == 2:
@@ -83,7 +90,7 @@ txtlist.append(t)
 
 def change_page():
     canvas.delete(txtlist[-1])
-    q = len(txtlist) % len(page_lists)
+    q = len(txtlist) % len(page_lists) - 1
     e = canvas.create_text(500,300,
     text = page_strs[q],
     font=ft,
